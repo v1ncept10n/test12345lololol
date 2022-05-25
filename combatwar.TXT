@@ -1,0 +1,209 @@
+getgenv().Settings = {
+    ["Auto Click Keybind"] = "V", -- Use an UpperCase letter or KeyCode Enum. Ex: Enum.KeyCode.Semicolon
+    ["Lock Mouse Position Keybind"] = "B",
+    ["Right Click"] = false,
+    ["GUI"] = true, -- A drawing gui that tells you what is going on with the autoclicker.
+    ["Delay"] = 0 -- 0 for RenderStepped, other numbers go to regular wait timings.
+}
+loadstring(game:HttpGet("https://raw.githubusercontent.com/BimbusCoder/Script/main/Auto%20Clicker.lua"))()
+loadstring(game:HttpGet("https://pastebin.com/raw/sDXcYFhR", true))()
+local folScreenGui = Instance.new("ScreenGui")
+local user = Instance.new("TextBox")
+local X = Instance.new("TextButton")
+local C = Instance.new("TextButton")
+local help = Instance.new("TextLabel")
+local V = Instance.new("TextButton")
+local htype = Instance.new("TextLabel")
+local ftype = Instance.new("TextButton")
+local hs = Instance.new("TextLabel")
+local s1 = Instance.new("TextButton")
+local s2 = Instance.new("TextButton")
+local s3 = Instance.new("TextButton")
+
+local follow = ""
+local followenabled = false
+local px,pz = 3,0 -- unused
+local followtype = 1 -- 1 walk, 2 tween, 3 teleport
+local TweenService = game:GetService("TweenService")
+
+folScreenGui.Parent = game.CoreGui
+
+user.Name = "user"
+user.Parent = folScreenGui
+user.AnchorPoint = Vector2.new(0.5, 0.5)
+user.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+user.BackgroundTransparency = 0.25
+user.Position = UDim2.new(0.5, 0, 0.5, 0)
+user.Size = UDim2.new(0.35, 0, 0.15, 0)
+user.PlaceholderText = "@username"
+user.Text = ""
+user.TextScaled = true
+
+X.Name = "X"
+X.Parent = folScreenGui
+X.AnchorPoint = Vector2.new(0.5, 0.5)
+X.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+X.BackgroundTransparency = 0.25
+X.Position = UDim2.new(0.375, 0, 0.625, 0)
+X.Size = UDim2.new(0.1, 0, 0.1, 0)
+X.Text = "X"
+X.TextScaled = true
+
+C.Name = "C"
+C.Parent = folScreenGui
+C.AnchorPoint = Vector2.new(0.5, 0.5)
+C.BackgroundColor3 = Color3.fromRGB(255, 179, 0)
+C.BackgroundTransparency = 0.25
+C.Position = UDim2.new(0.375, 0, 0.725, 0)
+C.Size = UDim2.new(0.1, 0, 0.1, 0)
+C.Text = "C"
+C.TextScaled = true
+
+help.Name = "help"
+help.Parent = folScreenGui
+help.AnchorPoint = Vector2.new(0.5, 0.5)
+help.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+help.BackgroundTransparency = 0.5
+help.Position = UDim2.new(0.5, 0, 0.25, 0)
+help.Size = UDim2.new(0.35, 0, 0.35, 0)
+help.Text = "Paste @username (case sensitive) and select follow method, then press V to follow the player. Press X to close this window. C to stop following."
+help.TextScaled = true
+
+V.Name = "V"
+V.Parent = folScreenGui
+V.AnchorPoint = Vector2.new(0.5, 0.5)
+V.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+V.BackgroundTransparency = 0.25
+V.Position = UDim2.new(0.375, 0, 0.825, 0)
+V.Size = UDim2.new(0.1, 0, 0.1, 0)
+V.Text = "V"
+V.TextScaled = true
+
+htype.Name = "htype"
+htype.Parent = folScreenGui
+htype.AnchorPoint = Vector2.new(0.5, 0.5)
+htype.BackgroundColor3 = Color3.fromRGB(200, 255, 200)
+htype.BackgroundTransparency = 0.25
+htype.Position = UDim2.new(0.487, 0, 0.625, 0)
+htype.Size = UDim2.new(0.125, 0, 0.1, 0)
+htype.Text = "Select follow method (click to change)"
+htype.TextScaled = true
+
+ftype.Name = "type"
+ftype.Parent = folScreenGui
+ftype.AnchorPoint = Vector2.new(0.5, 0.5)
+ftype.BackgroundColor3 = Color3.fromRGB(200, 255, 200)
+ftype.BackgroundTransparency = 0.5
+ftype.Position = UDim2.new(0.612, 0, 0.625, 0)
+ftype.Size = UDim2.new(0.125, 0, 0.1, 0)
+ftype.Text = "Walk (safest)"
+ftype.TextScaled = true
+
+--[[hs.Name = "hs"
+hs.Parent = folScreenGui
+hs.AnchorPoint = Vector2.new(0.5, 0.5)
+hs.BackgroundColor3 = Color3.fromRGB(200, 200, 255)
+hs.BackgroundTransparency = 0.25
+hs.Position = UDim2.new(0.487, 0, 0.725, 0)
+hs.Size = UDim2.new(0.125, 0, 0.1, 0)
+hs.Text = "Settings"
+hs.TextScaled = true
+
+s1.Name = "s1"
+s1.Parent = folScreenGui
+s1.AnchorPoint = Vector2.new(0.5, 0.5)
+s1.BackgroundColor3 = Color3.fromRGB(200, 200, 255)
+s1.BackgroundTransparency = 0.5
+s1.Position = UDim2.new(0.612, 0, 0.725, 0)
+s1.Size = UDim2.new(0.125, 0, 0.1, 0)
+s1.Text = "set1"
+s1.TextScaled = true
+
+s2.Name = "s2"
+s2.Parent = folScreenGui
+s2.AnchorPoint = Vector2.new(0.5, 0.5)
+s2.BackgroundColor3 = Color3.fromRGB(200, 200, 255)
+s2.BackgroundTransparency = 0.5
+s2.Position = UDim2.new(0.612, 0, 0.825, 0)
+s2.Size = UDim2.new(0.125, 0, 0.1, 0)
+s2.Text = "set2"
+s2.TextScaled = true
+
+s3.Name = "s3"
+s3.Parent = folScreenGui
+s3.AnchorPoint = Vector2.new(0.5, 0.5)
+s3.BackgroundColor3 = Color3.fromRGB(200, 200, 255)
+s3.BackgroundTransparency = 0.5
+s3.Position = UDim2.new(0.487, 0, 0.825, 0)
+s3.Size = UDim2.new(0.125, 0, 0.1, 0)
+s3.Text = "set3"
+s3.TextScaled = true]]
+
+-- soon tm
+
+X.MouseButton1Up:Connect(function()
+	folScreenGui:Destroy()
+end)
+C.MouseButton1Up:Connect(function()
+	followenabled = false
+end)
+V.MouseButton1Up:Connect(function()
+	follow = user.Text
+	for i,v in pairs(game.Players:GetChildren()) do
+		if v.Name == follow then
+			followenabled = true
+			if followtype == 1 then
+				while true do
+					if followenabled then
+						wait(.1)
+						game.Players.LocalPlayer.Character:WaitForChild("Humanoid",11):MoveTo(v.Character:WaitForChild("HumanoidRootPart",11).Position)
+					else break end
+				end
+			elseif followtype == 2 then
+				-- todo: make this work
+			elseif followtype == 3 then
+				while true do
+					if followenabled then
+						wait()
+						if game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChild("HumanoidRootPart") then
+							game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = v.Character:FindFirstChild("HumanoidRootPart").CFrame + Vector3.new(px,0,pz)
+						end
+					else break end
+				end
+			else
+				warn("Couldn't follow a player: something went wrong with follow type (somehow)")
+			end
+		end
+	end
+end)
+ftype.MouseButton1Up:Connect(function()
+	if followtype == 1 then
+		ftype.Text = "Tween (balanced?) NOT WORKING"
+		followtype = 2
+	elseif followtype == 2 then
+		ftype.Text = "Teleport (fastest)"
+		followtype = 3
+	elseif followtype == 3 then
+		ftype.Text = "Walk (safest)"
+		followtype = 1
+	end
+end)
+--[[s1.MouseButton1Up:Connect(function()
+	
+end)
+s2.MouseButton1Up:Connect(function()
+	
+end)
+s3.MouseButton1Up:Connect(function()
+	
+end)]]
+
+local vim = game:service'VirtualInputManager'
+while true do
+wait(.1)
+if game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").Health == 0 then
+vim:SendKeyEvent(true, "Space", false, game)
+wait(1.2)
+vim:SendKeyEvent(false, "Space", false, game)
+end
+end
